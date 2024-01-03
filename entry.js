@@ -27,15 +27,15 @@ getApiData();
 
 //state
 let fixerIoData;
-// const topCurrencies = ["USD", "GBP", "EUR"];
+const topCurrencies = ["USD", "GBP", "EUR"];
 
 async function getApiData() {
   try {
     const { data } = await axios.get(
-      `xxx http://data.fixer.io/api/latest?access_key=93082791255de205159bfb5a11602060&base=EUR`
+      `xhttp://data.fixer.io/api/latest?access_key=93082791255de205159bfb5a11602060&base=EUR`
     );
     fixerIoData = data;
-    // setCurrencyOptions();
+    setCurrencyOptions();
 
     //Listen for input change
     inputRef.addEventListener("input", (e) => {
@@ -50,11 +50,31 @@ async function getApiData() {
 }
 
 function setCurrencyOptions() {
-  const options = fixerIoData;
+  const options = Object.keys(fixerIoData.rates); //returns an array containing the keys of the obj object
+
+  //Option 1 (preferred)
+  for (let i = 0; i < options.length; i++) {
+    const option = document.createElement("option");
+    option.value = options[i];
+    option.text = options[i];
+
+    if (topCurrencies.includes(options[i])) {
+      currencyRef.prepend(option);
+    } else {
+      currencyRef.append(option);
+    }
+  }
+
+  //Option 2
+  // const html = options.map((currency) => {
+  //   return `<option value="${currency}">${currency}</option>`;
+  // });
+  // currencyRef.innerHTML = html;
 }
 
 //Listen for currency change on drop down
 currencyRef.addEventListener("change", (e) => {
+  outputLabelRef.innerHTML = `${e.target.value} value:`;
   onUserInput(inputRef.value, e.target.value);
 });
 
